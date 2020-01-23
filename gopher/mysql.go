@@ -57,13 +57,14 @@ func (m mysql) FieldToDataType(goType GoType) string {
 		return `TINYINT(1)`
 	case FloatType, NullsFloatType:
 		return `FLOAT`
-	case UuidType:
+	case UUIDType:
 		return `VARCHAR(36)`
 	default:
 		return ``
 	}
 }
 
+// MySQL parses go struct src into MySQL create statement
 func MySQL(src string) (string, error) {
 	var out string
 	goStruct, err := parseSrc(src)

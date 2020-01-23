@@ -9,6 +9,7 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+// GoField field on a go struct
 type GoField struct {
 	Name string `json:"name"`
 	Type GoType `json:"type"`
@@ -28,6 +29,7 @@ func (f *GoField) camelName() string {
 	return strcase.ToCamel(f.Name)
 }
 
+// GoStruct a go struct
 type GoStruct struct {
 	Name   string     `json:"name"`
 	Fields []*GoField `json:"fields"`
@@ -46,6 +48,7 @@ func (s GoStruct) String() string {
 	return string(ju)
 }
 
+// ToGoFields creates the text for a go struct
 func (s *GoStruct) ToGoFields() string {
 	fields := []string{}
 	for _, f := range s.Fields {
@@ -61,6 +64,7 @@ func (s *GoStruct) ToGoFields() string {
 	return strings.Join(fields, "\n")
 }
 
+// ToGo converts go struct to text definition
 func (s *GoStruct) ToGo() string {
 	return fmt.Sprintf("type %s struct {\n%s\n}", s.camelName(), s.ToGoFields())
 }
