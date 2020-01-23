@@ -4,6 +4,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"reflect"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -38,10 +39,17 @@ func parseSrc(src string) (*GoStruct, error) {
 	goFields := []*GoField{}
 	fields := structDecl.Fields.List
 	for _, field := range fields {
+
 		typeExpr := field.Type
 		goField := &GoField{
 			Name: field.Names[0].Name,
 			Type: GoType(src[typeExpr.Pos()-1 : typeExpr.End()-1]),
+		}
+		if field.Tag != nil {
+			tag := reflect.StructTag(field.Tag.Value[1 : len(field.Tag.Value)-1])
+			if dbTag := tag.Get("db"); dbTag != "" {
+				goField.Tag = dbTag
+			}
 		}
 		goFields = append(goFields, goField)
 	}

@@ -12,9 +12,13 @@ import (
 type GoField struct {
 	Name string `json:"name"`
 	Type GoType `json:"type"`
+	Tag  string `json:"tag"`
 }
 
 func (f *GoField) snakeName() string {
+	if f.Tag != "" {
+		return f.Tag
+	}
 	return helpers.ToSnake(f.Name)
 }
 func (f *GoField) camelName() string {
