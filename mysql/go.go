@@ -6,12 +6,12 @@ import (
 	"github.com/xwb1989/sqlparser"
 )
 
+// Go parses mysql to go struct text
 func Go(sql string) (string, error) {
 	goStruct, err := parseMySQLToGoStruct(sql)
 	if err != nil {
 		return "", errors.Wrap(err, "parse mysql to go struct")
 	}
-
 	return goStruct.ToGo(), nil
 }
 
