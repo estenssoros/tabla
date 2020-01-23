@@ -20,7 +20,7 @@ var goCmd = &cobra.Command{
 
 var goMySQLCmd = &cobra.Command{
 	Use:     "mysql",
-	Short:   "create statement is in mysql format",
+	Short:   "create statement in mysql format",
 	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
 	RunE: func(cmd *cobra.Command, args []string) error {
 		stmt, err := clipboard.ReadAll()
