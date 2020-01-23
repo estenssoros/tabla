@@ -1,0 +1,62 @@
+package gopher
+
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/estenssoros/tabla/helpers"
+	"github.com/iancoleman/strcase"
+)
+
+type GoField struct {
+	Name string `json:"name"`
+	Type GoType `json:"type"`
+}
+
+func (f *GoField) snakeName() string {
+	return helpers.ToSnake(f.Name)
+}
+func (f *GoField) camelName() string {
+	if f.Name == "id" {
+		return "ID"
+	}
+	return strcase.ToCamel(f.Name)
+}
+
+type GoStruct struct {
+	Name   string     `json:"name"`
+	Fields []*GoField `json:"fields"`
+}
+
+func (s *GoStruct) snakeName() string {
+	return helpers.ToSnake(s.Name)
+}
+
+func (s *GoStruct) camelName() string {
+	return strcase.ToCamel(s.Name)
+}
+
+func (s GoStruct) String() string {
+	ju, _ := json.MarshalIndent(s, "", " ")
+	return string(ju)
+}
+
+func (s *GoStruct) ToGoFields() string {
+	fields := []string{}
+	for _, f := range s.Fields {
+		field := fmt.Sprintf(
+			"    %s %s `json:\"%s\" db:\"%s\"`",
+			f.camelName(),
+			f.Type,
+			f.snakeName(),
+			f.snakeName(),
+		)
+		fields = append(fields, field)
+	}
+	return strings.Join(fields, "\n")
+}
+
+func (s *GoStruct) ToGo() string {
+	return fmt.Sprintf("type %s struct {\n%s\n}", s.camelName(), s.ToGoFields())
+}
