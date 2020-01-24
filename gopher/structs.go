@@ -3,10 +3,12 @@ package gopher
 import (
 	"encoding/json"
 	"fmt"
+	"go/format"
 	"strings"
 
 	"github.com/estenssoros/tabla/helpers"
 	"github.com/iancoleman/strcase"
+	"github.com/pkg/errors"
 )
 
 // GoField field on a go struct
@@ -65,6 +67,13 @@ func (s *GoStruct) ToGoFields() string {
 }
 
 // ToGo converts go struct to text definition
-func (s *GoStruct) ToGo() string {
-	return fmt.Sprintf("type %s struct {\n%s\n}", s.camelName(), s.ToGoFields())
+func (s *GoStruct) ToGo() (string, error) {
+	expr := fmt.Sprintf("type %s struct {\n%s\n}", s.camelName(), s.ToGoFields())
+
+	b, err := format.Source([]byte(expr))
+	if err != nil {
+		return "", errors.Wrap(err, "format node")
+	}
+
+	return string(b), nil
 }
