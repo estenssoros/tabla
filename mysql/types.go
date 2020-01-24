@@ -23,7 +23,7 @@ func (m mySQLType) ToGo(s *sqlparser.SQLVal) (gopher.GoType, error) {
 		return gopher.IntType, nil
 	case varcharType:
 		if string(s.Val) == "36" {
-			return gopher.UuidType, nil
+			return gopher.UUIDType, nil
 		}
 		return gopher.StringType, nil
 	case textType:
