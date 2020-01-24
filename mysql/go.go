@@ -12,7 +12,7 @@ func Go(sql string) (string, error) {
 	if err != nil {
 		return "", errors.Wrap(err, "parse mysql to go struct")
 	}
-	return goStruct.ToGo(), nil
+	return goStruct.ToGo()
 }
 
 func parseMySQLToGoStruct(sql string) (*gopher.GoStruct, error) {
