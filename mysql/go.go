@@ -7,15 +7,15 @@ import (
 )
 
 // Go parses mysql to go struct text
-func Go(sql string) (string, error) {
-	goStruct, err := parseMySQLToGoStruct(sql)
+func Go(sql string, nulls bool) (string, error) {
+	goStruct, err := parseMySQLToGoStruct(sql, nulls)
 	if err != nil {
 		return "", errors.Wrap(err, "parse mysql to go struct")
 	}
 	return goStruct.ToGo()
 }
 
-func parseMySQLToGoStruct(sql string) (*gopher.GoStruct, error) {
+func parseMySQLToGoStruct(sql string, nulls bool) (*gopher.GoStruct, error) {
 	stmt, err := sqlparser.ParseStrictDDL(sql)
 	if err != nil {
 		return nil, errors.Wrap(err, "sql parser parse")
@@ -30,7 +30,7 @@ func parseMySQLToGoStruct(sql string) (*gopher.GoStruct, error) {
 	}
 	fields := []*gopher.GoField{}
 	for _, c := range ddl.TableSpec.Columns {
-		goType, err := mySQLType(c.Type.Type).ToGo(c.Type.Length)
+		goType, err := mySQLType(c.Type.Type).ToGo(nulls, c.Type.Length)
 		if err != nil {
 			return nil, errors.Wrap(err, "mysql type to go")
 		}

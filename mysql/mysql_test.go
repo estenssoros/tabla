@@ -1,8 +1,8 @@
 package mysql
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -22,7 +22,7 @@ func TestGo(t *testing.T) {
 		", `nulls_float_field` FLOAT" +
 		", PRIMARY KEY(`id`)" +
 		")"
-	out, err := Go(stmt)
+	out, err := Go(stmt, false)
 	assert.Nil(t, err)
 	fmt.Println(out)
 }
