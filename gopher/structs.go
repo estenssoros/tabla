@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/estenssoros/tabla/helpers"
-	"github.com/iancoleman/strcase"
 	"github.com/pkg/errors"
 )
 
@@ -28,7 +27,7 @@ func (f *GoField) camelName() string {
 	if f.Name == "id" {
 		return "ID"
 	}
-	return strcase.ToCamel(f.Name)
+	return helpers.ToCamel(f.Name)
 }
 
 // GoStruct a go struct
@@ -42,7 +41,7 @@ func (s *GoStruct) snakeName() string {
 }
 
 func (s *GoStruct) camelName() string {
-	return strcase.ToCamel(s.Name)
+	return helpers.ToCamel(s.Name)
 }
 
 func (s GoStruct) String() string {
@@ -69,7 +68,6 @@ func (s *GoStruct) ToGoFields() string {
 // ToGo converts go struct to text definition
 func (s *GoStruct) ToGo() (string, error) {
 	expr := fmt.Sprintf("type %s struct {\n%s\n}", s.camelName(), s.ToGoFields())
-
 	b, err := format.Source([]byte(expr))
 	if err != nil {
 		return "", errors.Wrap(err, "format node")
