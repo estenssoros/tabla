@@ -24,8 +24,8 @@ var mysqlCmd = &cobra.Command{
 		if err != nil {
 			return errors.Wrap(err, "mySQLToGo")
 		}
-		if err := clipboard.WriteAll(out); err != nil {
-			return errors.Wrap(err, "clipboard write")
+		if copy {
+			return errors.Wrap(clipboard.WriteAll(out), "clipboard write")
 		}
 		fmt.Println(out)
 		return nil
