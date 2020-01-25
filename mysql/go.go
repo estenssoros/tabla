@@ -35,7 +35,6 @@ func parseMySQLToGoStruct(sql string, nulls bool) (*gopher.GoStruct, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "mysql type to go")
 		}
-
 		fields = append(fields, field)
 	}
 	return &gopher.GoStruct{
