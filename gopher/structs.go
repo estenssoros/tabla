@@ -35,14 +35,35 @@ func (f *GoField) CamelName() string {
 	return helpers.ToCamel(f.Name)
 }
 
-func (f *GoField) extra() string {
+func (f *GoField) ToGo() string {
 	if f.SQLType == "" {
-		return ""
+		return fmt.Sprintf(
+			"    %s %s `json:\"%s\" db:\"%s\"`",
+			f.CamelName(),
+			f.Type,
+			f.SnakeName(),
+			f.SnakeName(),
+		)
 	}
 	if f.SQLExtra == "" {
-		return string(f.SQLType)
+		return fmt.Sprintf(
+			"    %s %s `json:\"%s\" db:\"%s,%s\"`",
+			f.CamelName(),
+			f.Type,
+			f.SnakeName(),
+			f.SnakeName(),
+			f.SQLType,
+		)
 	}
-	return string(f.SQLType) + "," + f.SQLExtra
+	return fmt.Sprintf(
+		"    %s %s `json:\"%s\" db:\"%s,%s,%s\"`",
+		f.CamelName(),
+		f.Type,
+		f.SnakeName(),
+		f.SnakeName(),
+		f.SQLType,
+		f.SQLExtra,
+	)
 }
 
 // GoStruct a go struct
@@ -70,15 +91,7 @@ func (s GoStruct) String() string {
 func (s *GoStruct) ToGoFields() string {
 	fields := []string{}
 	for _, f := range s.Fields {
-		field := fmt.Sprintf(
-			"    %s %s `json:\"%s\" db:\"%s,%s\"`",
-			f.CamelName(),
-			f.Type,
-			f.SnakeName(),
-			f.SnakeName(),
-			f.extra(),
-		)
-		fields = append(fields, field)
+		fields = append(fields, f.ToGo())
 	}
 	return strings.Join(fields, "\n")
 }
