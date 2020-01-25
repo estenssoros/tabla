@@ -35,6 +35,7 @@ func (f *GoField) CamelName() string {
 	return helpers.ToCamel(f.Name)
 }
 
+// ToGo converts to go fmt field
 func (f *GoField) ToGo() string {
 	if f.SQLType == "" {
 		return fmt.Sprintf(
