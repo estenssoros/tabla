@@ -5,6 +5,7 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/estenssoros/tabla/gopher"
+	"github.com/estenssoros/tabla/mysql"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -30,7 +31,7 @@ var goMySQLCmd = &cobra.Command{
 		if stmt == "" {
 			return errors.New("no stmt in clipboard")
 		}
-		out, err := gopher.MySQL(stmt)
+		out, err := gopher.DropCreate(stmt, mysql.Dialect{})
 		if err != nil {
 			return errors.Wrap(err, "gopher mysql")
 		}

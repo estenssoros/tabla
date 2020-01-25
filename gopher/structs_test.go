@@ -20,7 +20,7 @@ var testSnakeNameTables = []struct {
 func TestSnakeName(t *testing.T) {
 	for _, tt := range testSnakeNameTables {
 		gField := &GoField{Name: tt.in}
-		assert.Equal(t, gField.snakeName(), tt.out)
+		assert.Equal(t, gField.SnakeName(), tt.out)
 	}
 }
 
@@ -35,7 +35,7 @@ var testGoFieldCamelNameTables = []struct {
 func TestGoFieldCamelName(t *testing.T) {
 	for _, tt := range testGoFieldCamelNameTables {
 		gField := &GoField{Name: tt.in}
-		assert.Equal(t, gField.camelName(), tt.out)
+		assert.Equal(t, gField.CamelName(), tt.out)
 	}
 }
 
@@ -49,7 +49,7 @@ var testGoStructCamelNameTables = []struct {
 func TestGoStructCamelName(t *testing.T) {
 	for _, tt := range testGoStructCamelNameTables {
 		gStruct := &GoStruct{Name: tt.in}
-		assert.Equal(t, gStruct.camelName(), tt.out)
+		assert.Equal(t, gStruct.CamelName(), tt.out)
 		assert.NotEmpty(t, gStruct.String())
 	}
 }

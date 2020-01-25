@@ -12,22 +12,31 @@ import (
 
 // GoField field on a go struct
 type GoField struct {
-	Name string `json:"name"`
-	Type GoType `json:"type"`
-	Tag  string `json:"tag"`
+	Name     string `json:"name"`
+	Type     GoType `json:"type"`
+	Tag      string `json:"tag"`
+	SQLType  string
+	SQLExtra interface{}
 }
 
-func (f *GoField) snakeName() string {
+func (f *GoField) SnakeName() string {
 	if f.Tag != "" {
 		return f.Tag
 	}
 	return helpers.ToSnake(f.Name)
 }
-func (f *GoField) camelName() string {
+func (f *GoField) CamelName() string {
 	if f.Name == "id" {
 		return "ID"
 	}
 	return helpers.ToCamel(f.Name)
+}
+
+func (f *GoField) extra() string {
+	if f.SQLType == "" {
+		return ""
+	}
+	return string(f.SQLType)
 }
 
 // GoStruct a go struct
@@ -36,11 +45,11 @@ type GoStruct struct {
 	Fields []*GoField `json:"fields"`
 }
 
-func (s *GoStruct) snakeName() string {
+func (s *GoStruct) SnakeName() string {
 	return helpers.ToSnake(s.Name)
 }
 
-func (s *GoStruct) camelName() string {
+func (s *GoStruct) CamelName() string {
 	return helpers.ToCamel(s.Name)
 }
 
@@ -54,11 +63,12 @@ func (s *GoStruct) ToGoFields() string {
 	fields := []string{}
 	for _, f := range s.Fields {
 		field := fmt.Sprintf(
-			"    %s %s `json:\"%s\" db:\"%s\"`",
-			f.camelName(),
+			"    %s %s `json:\"%s\" db:\"%s,%s\"`",
+			f.CamelName(),
 			f.Type,
-			f.snakeName(),
-			f.snakeName(),
+			f.SnakeName(),
+			f.SnakeName(),
+			f.extra(),
 		)
 		fields = append(fields, field)
 	}
@@ -67,7 +77,7 @@ func (s *GoStruct) ToGoFields() string {
 
 // ToGo converts go struct to text definition
 func (s *GoStruct) ToGo() (string, error) {
-	expr := fmt.Sprintf("type %s struct {\n%s\n}", s.camelName(), s.ToGoFields())
+	expr := fmt.Sprintf("// %s\ntype %s struct {\n%s\n}\n", s.CamelName(), s.CamelName(), s.ToGoFields())
 	b, err := format.Source([]byte(expr))
 	if err != nil {
 		return "", errors.Wrap(err, "format node")

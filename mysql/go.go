@@ -16,6 +16,7 @@ func Go(sql string, nulls bool) (string, error) {
 }
 
 func parseMySQLToGoStruct(sql string, nulls bool) (*gopher.GoStruct, error) {
+	sql = removeKeywords(sql)
 	stmt, err := sqlparser.ParseStrictDDL(sql)
 	if err != nil {
 		return nil, errors.Wrap(err, "sql parser parse")
@@ -30,7 +31,7 @@ func parseMySQLToGoStruct(sql string, nulls bool) (*gopher.GoStruct, error) {
 	}
 	fields := []*gopher.GoField{}
 	for _, c := range ddl.TableSpec.Columns {
-		goType, err := mySQLType(c.Type.Type).ToGo(nulls, c.Type.Length)
+		goType, err := SQLType(c.Type.Type).ToGo(nulls, c.Type.Length)
 		if err != nil {
 			return nil, errors.Wrap(err, "mysql type to go")
 		}
