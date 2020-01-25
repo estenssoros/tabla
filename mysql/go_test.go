@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -67,32 +68,36 @@ var testGoTables = []struct {
 			", `nulls_float_field` FLOAT" +
 			", PRIMARY KEY(`id`)" +
 			")",
-		true,
+		false,
 	},
 }
 
 func TestGo(t *testing.T) {
-	for _, tt := range testGoTables {
-		out, err := Go(tt.in, false)
-		if tt.err {
-			assert.NotNil(t, err)
-			assert.Empty(t, out)
-		} else {
-			assert.Nil(t, err)
-			assert.NotEmpty(t, out)
-		}
+	for i, tt := range testGoTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			out, err := Go(tt.in, false)
+			if tt.err {
+				assert.NotNil(t, err)
+				assert.Empty(t, out)
+			} else {
+				assert.Nil(t, err)
+				assert.NotEmpty(t, out)
+			}
+		})
 	}
 }
 
 func TestGoNulls(t *testing.T) {
-	for _, tt := range testGoTables {
-		out, err := Go(tt.in, true)
-		if tt.err {
-			assert.NotNil(t, err)
-			assert.Empty(t, out)
-		} else {
-			assert.Nil(t, err)
-			assert.NotEmpty(t, out)
-		}
+	for i, tt := range testGoTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			out, err := Go(tt.in, true)
+			if tt.err {
+				assert.NotNil(t, err)
+				assert.Empty(t, out)
+			} else {
+				assert.Nil(t, err)
+				assert.NotEmpty(t, out)
+			}
+		})
 	}
 }

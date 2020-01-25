@@ -1,6 +1,7 @@
 package gopher
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,9 +19,11 @@ var testSnakeNameTables = []struct {
 }
 
 func TestSnakeName(t *testing.T) {
-	for _, tt := range testSnakeNameTables {
-		gField := &GoField{Name: tt.in}
-		assert.Equal(t, gField.SnakeName(), tt.out)
+	for i, tt := range testSnakeNameTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			gField := &GoField{Name: tt.in}
+			assert.Equal(t, gField.SnakeName(), tt.out)
+		})
 	}
 }
 
@@ -33,9 +36,12 @@ var testGoFieldCamelNameTables = []struct {
 }
 
 func TestGoFieldCamelName(t *testing.T) {
-	for _, tt := range testGoFieldCamelNameTables {
-		gField := &GoField{Name: tt.in}
-		assert.Equal(t, gField.CamelName(), tt.out)
+
+	for i, tt := range testGoFieldCamelNameTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			gField := &GoField{Name: tt.in}
+			assert.Equal(t, gField.CamelName(), tt.out)
+		})
 	}
 }
 
@@ -47,10 +53,12 @@ var testGoStructCamelNameTables = []struct {
 }
 
 func TestGoStructCamelName(t *testing.T) {
-	for _, tt := range testGoStructCamelNameTables {
-		gStruct := &GoStruct{Name: tt.in}
-		assert.Equal(t, gStruct.CamelName(), tt.out)
-		assert.NotEmpty(t, gStruct.String())
+	for i, tt := range testGoStructCamelNameTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			gStruct := &GoStruct{Name: tt.in}
+			assert.Equal(t, gStruct.CamelName(), tt.out)
+			assert.NotEmpty(t, gStruct.String())
+		})
 	}
 }
 
@@ -72,14 +80,16 @@ var testGoStructToGoTables = []struct {
 }
 
 func TestGoStructToGo(t *testing.T) {
-	for _, tt := range testGoStructToGoTables {
-		out, err := tt.in.ToGo()
-		if tt.err {
-			assert.NotNil(t, err)
-			assert.Nil(t, out)
-		} else {
-			assert.Nil(t, err)
-			assert.NotNil(t, out)
-		}
+	for i, tt := range testGoStructToGoTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			out, err := tt.in.ToGo()
+			if tt.err {
+				assert.NotNil(t, err)
+				assert.Nil(t, out)
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, out)
+			}
+		})
 	}
 }

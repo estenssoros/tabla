@@ -1,8 +1,11 @@
 package mysql
 
-import "testing"
+import (
+	"fmt"
+	"testing"
 
-import "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
+)
 
 var testRemoveTrailingCommaTables = []struct {
 	in  string
@@ -16,8 +19,10 @@ var testRemoveTrailingCommaTables = []struct {
 }
 
 func TestRemoveTrailingComma(t *testing.T) {
-	for _, tt := range testRemoveTrailingCommaTables {
-		assert.Equal(t, tt.out, removeTrailingComma(tt.in))
+	for i, tt := range testRemoveTrailingCommaTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			assert.Equal(t, tt.out, removeTrailingComma(tt.in))
+		})
 	}
 }
 
@@ -48,7 +53,9 @@ var testRemoveKeyWordsTables = []struct {
 }
 
 func TestRemoveKeyWords(t *testing.T) {
-	for _, tt := range testRemoveKeyWordsTables {
-		assert.Equal(t, tt.out, removeKeywords(tt.in))
+	for i, tt := range testRemoveKeyWordsTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			assert.Equal(t, tt.out, removeKeywords(tt.in))
+		})
 	}
 }
