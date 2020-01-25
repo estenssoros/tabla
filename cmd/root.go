@@ -12,9 +12,10 @@ func init() {
 
 var rootCmd = &cobra.Command{
 	Use:   "tabla",
-	Short: "",
+	Short: "parses SQL and Go to bridge the languages",
 }
 
+// Execute main entry point for command
 func Execute() error {
 	return rootCmd.Execute()
 }
