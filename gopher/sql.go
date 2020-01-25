@@ -6,14 +6,13 @@ import (
 
 // DropCreate parses go struct src into create statement
 func DropCreate(src string, d Dialect) (string, error) {
-	goStruct, err := parseSrc(src)
+	goStruct, err := parseGoSrc(src)
 	if err != nil {
-		return "", errors.Wrap(err, "parse src")
+		return "", errors.Wrap(err, "parse go src")
 	}
-	drop := d.DropIfExists(goStruct)
 	create, err := d.Create(goStruct)
 	if err != nil {
 		return "", errors.Wrap(err, "mysql create")
 	}
-	return drop + create, nil
+	return d.DropIfExists(goStruct) + create, nil
 }
