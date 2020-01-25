@@ -73,20 +73,20 @@ func (m SQLType) toGoStandard(s *sqlparser.SQLVal) (gopher.GoType, error) {
 
 func (m SQLType) toGoNulls(s *sqlparser.SQLVal) (gopher.GoType, error) {
 	switch m {
-	case intType:
+	case intType, bigIntType, smallIntType:
 		return gopher.NullsIntType, nil
 	case varcharType:
 		if string(s.Val) == "36" {
 			return gopher.UUIDType, nil
 		}
 		return gopher.NullsStringType, nil
-	case textType:
+	case textType, longTextType:
 		return gopher.NullsStringType, nil
-	case dateTimeType:
+	case dateTimeType, dateType:
 		return gopher.NullsTimeType, nil
 	case boolType:
 		return gopher.NullsBoolType, nil
-	case floatType:
+	case floatType, doubleType, decimalType:
 		return gopher.NullsFloatType, nil
 	default:
 		return "", errors.Errorf("unknown type %s", m)
