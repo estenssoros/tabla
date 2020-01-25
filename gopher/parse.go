@@ -17,7 +17,44 @@ func checksrc(src string) string {
 	return "package asdf\n" + src
 }
 
-func parseSrc(src string) (*GoStruct, error) {
+type tags struct {
+	rawTag reflect.StructTag
+}
+
+func (t tags) Get(key string) *tag {
+	v := t.rawTag.Get(key)
+	if v == "" {
+		return &tag{valid: false}
+	}
+	var value string
+	options := []string{}
+	if strings.Contains(v, ",") {
+		splits := strings.Split(v, ",")
+		value = splits[0]
+		options = append(options, splits[1:]...)
+	} else {
+		value = v
+	}
+	return &tag{
+		key:     key,
+		value:   value,
+		options: options,
+		valid:   true,
+	}
+}
+
+type tag struct {
+	key     string
+	value   string
+	options []string
+	valid   bool
+}
+
+func parseTag(s string) *tags {
+	return &tags{reflect.StructTag(s)}
+}
+
+func parseGoSrc(src string) (*GoStruct, error) {
 	src = checksrc(src)
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, "", src, parser.AllErrors)
@@ -46,9 +83,16 @@ func parseSrc(src string) (*GoStruct, error) {
 			Type: GoType(src[typeExpr.Pos()-1 : typeExpr.End()-1]),
 		}
 		if field.Tag != nil {
-			tag := reflect.StructTag(field.Tag.Value[1 : len(field.Tag.Value)-1])
-			if dbTag := tag.Get("db"); dbTag != "" {
-				goField.Tag = dbTag
+			tag := parseTag(field.Tag.Value[1 : len(field.Tag.Value)-1])
+
+			if dbTag := tag.Get("db"); dbTag.valid {
+				goField.Tag = dbTag.value
+				if len(dbTag.options) > 0 {
+					goField.SQLType = dbTag.options[0]
+				}
+				if len(dbTag.options) > 1 {
+					goField.SQLExtra = dbTag.options[1]
+				}
 			}
 		}
 		goFields = append(goFields, goField)

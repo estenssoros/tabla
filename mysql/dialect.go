@@ -21,15 +21,10 @@ func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
 		if strings.ToLower(goField.Name) == "id" {
 			hasID = true
 		}
-		dataType, err := d.FieldToDataType(goField.Type)
+		field, err := d.Field(goField)
 		if err != nil {
-			return "", errors.Wrap(err, "field to datatype")
+			return "", errors.Wrap(err, "dialect field")
 		}
-		field := fmt.Sprintf(
-			"`%s` %s",
-			goField.SnakeName(),
-			dataType,
-		)
 		fields = append(fields, field)
 	}
 	if hasID {
@@ -41,15 +36,42 @@ func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
 	return strings.Join(fields, "\n    , "), nil
 }
 
+func (d Dialect) Field(goField *gopher.GoField) (string, error) {
+	if goField.SQLType == "" {
+		dataType, err := d.FieldToDataType(goField.Type)
+		if err != nil {
+			return "", errors.Wrap(err, "field to datatype")
+		}
+		return fmt.Sprintf(
+			"`%s` %s",
+			goField.SnakeName(),
+			dataType,
+		), nil
+	}
+	if goField.SQLExtra == "" {
+		return fmt.Sprintf(
+			"`%s` %s",
+			goField.SnakeName(),
+			goField.SQLType,
+		), nil
+	}
+	return fmt.Sprintf(
+		"`%s` %s(%s)",
+		goField.SnakeName(),
+		goField.SQLType,
+		goField.SQLExtra,
+	), nil
+}
+
 func (d Dialect) Create(s *gopher.GoStruct) (string, error) {
-	fields, err := d.Fields(s.Fields)
+	fieldsFormatted, err := d.Fields(s.Fields)
 	if err != nil {
 		return "", errors.Wrap(err, "mysql fields")
 	}
 	stmt := fmt.Sprintf(
 		"CREATE TABLE `%s` (\n%s\n);",
 		s.SnakeName(),
-		fields,
+		fieldsFormatted,
 	)
 	return stmt, nil
 }
