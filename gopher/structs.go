@@ -72,6 +72,5 @@ func (s *GoStruct) ToGo() (string, error) {
 	if err != nil {
 		return "", errors.Wrap(err, "format node")
 	}
-
 	return string(b), nil
 }

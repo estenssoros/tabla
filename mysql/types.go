@@ -68,20 +68,3 @@ func (m mySQLType) toGoNulls(s *sqlparser.SQLVal) (gopher.GoType, error) {
 		return "", errors.Errorf("unknown type %s", m)
 	}
 }
-
-func (m mySQLType) ToGoNulls() gopher.GoType {
-	switch m {
-	case intType:
-		return gopher.NullsIntType
-	case varcharType, textType:
-		return gopher.NullsStringType
-	case dateTimeType:
-		return gopher.NullsTimeType
-	case boolType:
-		return gopher.NullsBoolType
-	case floatType:
-		return gopher.NullsFloatType
-	default:
-		return ``
-	}
-}
