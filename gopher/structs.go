@@ -16,15 +16,18 @@ type GoField struct {
 	Type     GoType `json:"type"`
 	Tag      string `json:"tag"`
 	SQLType  string
-	SQLExtra interface{}
+	SQLExtra string
 }
 
+// SnakeName converts a field name to snake
 func (f *GoField) SnakeName() string {
 	if f.Tag != "" {
 		return f.Tag
 	}
 	return helpers.ToSnake(f.Name)
 }
+
+// CamelName convert a field name to camel
 func (f *GoField) CamelName() string {
 	if f.Name == "id" {
 		return "ID"
@@ -36,7 +39,10 @@ func (f *GoField) extra() string {
 	if f.SQLType == "" {
 		return ""
 	}
-	return string(f.SQLType)
+	if f.SQLExtra == "" {
+		return string(f.SQLType)
+	}
+	return string(f.SQLType) + "," + f.SQLExtra
 }
 
 // GoStruct a go struct
@@ -45,10 +51,12 @@ type GoStruct struct {
 	Fields []*GoField `json:"fields"`
 }
 
+// SnakeName converts a go struct name to snake
 func (s *GoStruct) SnakeName() string {
 	return helpers.ToSnake(s.Name)
 }
 
+// CamelName converts a go struct name to camel
 func (s *GoStruct) CamelName() string {
 	return helpers.ToCamel(s.Name)
 }

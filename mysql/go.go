@@ -31,14 +31,11 @@ func parseMySQLToGoStruct(sql string, nulls bool) (*gopher.GoStruct, error) {
 	}
 	fields := []*gopher.GoField{}
 	for _, c := range ddl.TableSpec.Columns {
-		goType, err := SQLType(c.Type.Type).ToGo(nulls, c.Type.Length)
+		field, err := SQLType(c.Type.Type).ToGoField(nulls, c)
 		if err != nil {
 			return nil, errors.Wrap(err, "mysql type to go")
 		}
-		field := &gopher.GoField{
-			Name: c.Name.String(),
-			Type: goType,
-		}
+
 		fields = append(fields, field)
 	}
 	return &gopher.GoStruct{

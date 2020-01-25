@@ -23,11 +23,29 @@ var (
 	decimalType  SQLType = "decimal"
 )
 
-func (m SQLType) ToGo(nulls bool, s *sqlparser.SQLVal) (gopher.GoType, error) {
-	if nulls {
-		return m.toGoNulls(s)
+func (m SQLType) ToGoField(nulls bool, c *sqlparser.ColumnDefinition) (*gopher.GoField, error) {
+	field := &gopher.GoField{
+		Name:    c.Name.String(),
+		SQLType: string(m),
 	}
-	return m.toGoStandard(s)
+	if c.Type.Length != nil {
+		field.SQLExtra = string(c.Type.Length.Val)
+	}
+
+	if nulls {
+		goType, err := m.toGoNulls(c.Type.Length)
+		if err != nil {
+			return nil, err
+		}
+		field.Type = goType
+	} else {
+		goType, err := m.toGoStandard(c.Type.Length)
+		if err != nil {
+			return nil, err
+		}
+		field.Type = goType
+	}
+	return field, nil
 
 }
 
