@@ -12,12 +12,20 @@ import (
 var nulls bool
 
 func init() {
-	mysqlCmd.Flags().BoolVarP(&nulls, "nulls", "", false, "create go struct with nulls")
+	mysqlCmd.PersistentFlags().BoolVarP(&nulls, "nulls", "", false, "create go struct with nulls")
+	mysqlCmd.AddCommand(mysqlStatementCmd)
+	mysqlCmd.AddCommand(mysqlDatabaseCmd)
 }
 
 var mysqlCmd = &cobra.Command{
 	Use:   "mysql",
 	Short: "converts a mysql create statement to a go struct",
+}
+
+var mysqlStatementCmd = &cobra.Command{
+	Use:     "statement",
+	Short:   "reads the clipboard for a statement and returns a go struct",
+	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
 	RunE: func(cmd *cobra.Command, args []string) error {
 		stmt, err := clipboard.ReadAll()
 		if err != nil {
@@ -36,4 +44,11 @@ var mysqlCmd = &cobra.Command{
 		fmt.Println(out)
 		return nil
 	},
+}
+
+var mysqlDatabaseCmd = &cobra.Command{
+	Use:     "database",
+	Short:   "converts database into structs",
+	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
+	RunE:    func(cmd *cobra.Command, args []string) error { return nil },
 }
