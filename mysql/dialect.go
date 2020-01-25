@@ -18,7 +18,7 @@ func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
 	var hasID bool
 	fields := []string{}
 	for _, goField := range goFields {
-		if strings.ToLower(goField.Name) == "id" {
+		if !hasID && strings.ToLower(goField.Name) == "id" {
 			hasID = true
 		}
 		field, err := d.Field(goField)
