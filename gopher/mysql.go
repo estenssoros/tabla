@@ -13,17 +13,21 @@ func (m mysql) DropIfExists(s *GoStruct) string {
 	return fmt.Sprintf("DROP TABLE IF EXISTS `%s`;\n", s.snakeName())
 }
 
-func (m mysql) Fields(goFields []*GoField) string {
+func (m mysql) Fields(goFields []*GoField) (string, error) {
 	var hasID bool
 	fields := []string{}
 	for _, goField := range goFields {
 		if strings.ToLower(goField.Name) == "id" {
 			hasID = true
 		}
+		dataType, err := m.FieldToDataType(goField.Type)
+		if err != nil {
+			return "", errors.Wrap(err, "field to datatype")
+		}
 		field := fmt.Sprintf(
 			"`%s` %s",
 			goField.snakeName(),
-			m.FieldToDataType(goField.Type),
+			dataType,
 		)
 		fields = append(fields, field)
 	}
@@ -33,46 +37,52 @@ func (m mysql) Fields(goFields []*GoField) string {
 	if len(fields) > 0 {
 		fields[0] = "    " + fields[0]
 	}
-	return strings.Join(fields, "\n    , ")
+	return strings.Join(fields, "\n    , "), nil
 }
 
-func (m mysql) Create(s *GoStruct) string {
+func (m mysql) Create(s *GoStruct) (string, error) {
+	fields, err := m.Fields(s.Fields)
+	if err != nil {
+		return "", errors.Wrap(err, "mysql fields")
+	}
 	stmt := fmt.Sprintf(
 		"CREATE TABLE `%s` (\n%s\n);",
 		s.snakeName(),
-		m.Fields(s.Fields),
+		fields,
 	)
-	return stmt
+	return stmt, nil
 }
 
-func (m mysql) FieldToDataType(goType GoType) string {
+func (m mysql) FieldToDataType(goType GoType) (string, error) {
 	switch goType {
 	case IntType, NullsIntType:
-		return `INT`
+		return `INT`, nil
 	case StringType, NullsStringType:
-		return `VARCHAR({update})`
+		return `VARCHAR({update})`, nil
 	case TimeType, NullsTimeType:
-		return `DATETIME`
+		return `DATETIME`, nil
 	case BoolType, NullsBoolType:
-		return `TINYINT(1)`
+		return `TINYINT(1)`, nil
 	case FloatType, NullsFloatType:
-		return `FLOAT`
+		return `FLOAT`, nil
 	case UUIDType:
-		return `VARCHAR(36)`
+		return `VARCHAR(36)`, nil
 	default:
-		return ``
+		return "", errors.Errorf("unknown type: %s", goType)
 	}
 }
 
 // MySQL parses go struct src into MySQL create statement
 func MySQL(src string) (string, error) {
-	var out string
 	goStruct, err := parseSrc(src)
 	if err != nil {
 		return "", errors.Wrap(err, "parse src")
 	}
 	m := mysql{}
-	out += m.DropIfExists(goStruct)
-	out += m.Create(goStruct)
-	return out, nil
+	drop := m.DropIfExists(goStruct)
+	create, err := m.Create(goStruct)
+	if err != nil {
+		return "", errors.Wrap(err, "mysql create")
+	}
+	return drop + create, nil
 }
