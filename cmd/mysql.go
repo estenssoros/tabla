@@ -22,17 +22,24 @@ var mysqlCmd = &cobra.Command{
 	Short: "converts a mysql create statement to a go struct",
 }
 
+func readClipboad() (string, error) {
+	stmt, err := clipboard.ReadAll()
+	if err != nil {
+		return "", errors.Wrap(err, "clipboard readall")
+	}
+	if stmt == "" {
+		return "", errors.New("no stmt in clipboard")
+	}
+	return stmt, nil
+}
+
 var mysqlStatementCmd = &cobra.Command{
-	Use:     "statement",
-	Short:   "reads the clipboard for a statement and returns a go struct",
-	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
+	Use:   "statement",
+	Short: "reads a statement from the clipboard and returns a go stuct",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		stmt, err := clipboard.ReadAll()
+		stmt, err := readClipboad()
 		if err != nil {
-			return errors.Wrap(err, "clipboard readall")
-		}
-		if stmt == "" {
-			return errors.New("no stmt in clipboard")
+			return errors.Wrap(err, "read clipboard")
 		}
 		out, err := mysql.Go(stmt, nulls)
 		if err != nil {

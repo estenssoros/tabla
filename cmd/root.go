@@ -7,6 +7,7 @@ var copy bool
 func init() {
 	rootCmd.AddCommand(goCmd)
 	rootCmd.AddCommand(mysqlCmd)
+	rootCmd.AddCommand(mssqlCmd)
 	rootCmd.PersistentFlags().BoolVarP(&copy, "copy", "c", false, "send output to clipboard")
 }
 
