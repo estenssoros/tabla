@@ -54,48 +54,48 @@ var mysqlStatementCmd = &cobra.Command{
 }
 
 var (
-	host, user, password, port, name string
+	mysqlHost, mysqlUser, mysqlPassword, mysqlPort, mysqlName string
 )
 
 func init() {
-	mysqlDatabaseCmd.Flags().StringVarP(&host, "host", "", "", "database host")
-	mysqlDatabaseCmd.Flags().StringVarP(&user, "user", "u", "", "database user")
-	mysqlDatabaseCmd.Flags().StringVarP(&password, "password", "p", "", "database password")
-	mysqlDatabaseCmd.Flags().StringVarP(&port, "port", "", "3306", "database port")
-	mysqlDatabaseCmd.Flags().StringVarP(&name, "name", "n", "", "database name")
+	mysqlDatabaseCmd.Flags().StringVarP(&mysqlHost, "host", "", "", "database host")
+	mysqlDatabaseCmd.Flags().StringVarP(&mysqlUser, "user", "u", "", "database user")
+	mysqlDatabaseCmd.Flags().StringVarP(&mysqlPassword, "password", "p", "", "database password")
+	mysqlDatabaseCmd.Flags().StringVarP(&mysqlPort, "port", "", "3306", "database port")
+	mysqlDatabaseCmd.Flags().StringVarP(&mysqlName, "name", "n", "", "database name")
 }
 
 var mysqlDatabaseCmd = &cobra.Command{
 	Use:   "database",
 	Short: "converts database into structs",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		if host == "" {
+		if mysqlHost == "" {
 			return errors.New("host cannot be blank")
 		}
-		if user == "" {
+		if mysqlUser == "" {
 			return errors.New("user cannot be blank")
 		}
-		if password == "" {
+		if mysqlPassword == "" {
 			return errors.New("password cannot be blank")
 		}
-		if name == "" {
+		if mysqlName == "" {
 			return errors.New("name cannot be blank")
 		}
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		config := &mysql.ConnectConfig{
-			Host:     host,
-			User:     user,
-			Password: password,
-			Port:     port,
-			Name:     name,
+			Host:     mysqlHost,
+			User:     mysqlUser,
+			Password: mysqlPassword,
+			Port:     mysqlPort,
+			Name:     mysqlName,
 		}
 		tables, err := mysql.ShowCreateTables(config)
 		if err != nil {
 			return errors.Wrap(err, "show create tables")
 		}
-		var out = fmt.Sprintf("package %s\n", name)
+		var out = fmt.Sprintf("package %s\n", mysqlName)
 		fmt.Println(out)
 		for _, table := range tables {
 			goStructString, err := mysql.Go(table, nulls)

@@ -1,7 +1,14 @@
 package mssql
 
-import "errors"
+import (
+	"github.com/estenssoros/tabla/gopher"
+	"github.com/pkg/errors"
+)
 
 func Go(sql string, nulls bool) (string, error) {
-	return "", errors.New("not implemented")
+	goStruct, err := gopher.ParseSQLToGoStruct(sql, &converter{}, nulls)
+	if err != nil {
+		return "", errors.Wrap(err, "parse mysql to go struct")
+	}
+	return goStruct.ToGo()
 }
