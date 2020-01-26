@@ -92,3 +92,17 @@ func (m SQLType) toGoNulls(s *sqlparser.SQLVal) (gopher.GoType, error) {
 		return "", errors.Errorf("unknown type %s", m)
 	}
 }
+
+type converter struct{}
+
+func (c converter) ColDefToGoField(colDef *sqlparser.ColumnDefinition, nulls bool) (*gopher.GoField, error) {
+	field, err := SQLType(colDef.Type.Type).ToGoField(nulls, colDef)
+	if err != nil {
+		return nil, errors.Wrap(err, "myslq type to go")
+	}
+	return field, nil
+}
+
+func (c converter) PrepareStatment(sql string) string {
+	return removeKeywords(sql)
+}
