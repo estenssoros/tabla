@@ -2,6 +2,11 @@
 
 convert a SQL create statement to a go struct and visa-versa
 
+## suported dialects
+
+- mysql 
+- mssql
+
 ## go to SQL
 
 ```go
@@ -68,7 +73,7 @@ CREATE TABLE `test` (
 copy the create statement to you clipboard
 
 ```bash
-tabla mysql
+tabla mysql statement
 ```
  
 output:
@@ -81,5 +86,63 @@ type Test struct {
 	TimeField        time.Time `json:"time_field" db:"time_field"`
 	BoolField        bool      `json:"bool_field" db:"bool_field"`
 	FloatField       float64   `json:"float_field" db:"float_field"`
+}
+```
+
+```bash
+tabla mysql database --host 127.0.0.1 -u root -p my_password -n my_datatbase
+```
+
+```go
+package dev
+
+// AuthGroup
+type AuthGroup struct {
+	ID   int    `json:"id" db:"id,int,11"`
+	Name string `json:"name" db:"name,varchar,80"`
+}
+
+// AuthGroupPermissions
+type AuthGroupPermissions struct {
+	ID           int `json:"id" db:"id,int,11"`
+	GroupId      int `json:"group_id" db:"group_id,int,11"`
+	PermissionId int `json:"permission_id" db:"permission_id,int,11"`
+}
+
+// AuthPermission
+type AuthPermission struct {
+	ID            int    `json:"id" db:"id,int,11"`
+	Name          string `json:"name" db:"name,varchar,255"`
+	ContentTypeId int    `json:"content_type_id" db:"content_type_id,int,11"`
+	Codename      string `json:"codename" db:"codename,varchar,100"`
+}
+
+// AuthUser
+type AuthUser struct {
+	ID          int       `json:"id" db:"id,int,11"`
+	Password    string    `json:"password" db:"password,varchar,128"`
+	LastLogin   time.Time `json:"last_login" db:"last_login,datetime,6"`
+	IsSuperuser bool      `json:"is_superuser" db:"is_superuser,tinyint,1"`
+	Username    string    `json:"username" db:"username,varchar,150"`
+	FirstName   string    `json:"first_name" db:"first_name,varchar,30"`
+	LastName    string    `json:"last_name" db:"last_name,varchar,150"`
+	Email       string    `json:"email" db:"email,varchar,254"`
+	IsStaff     bool      `json:"is_staff" db:"is_staff,tinyint,1"`
+	IsActive    bool      `json:"is_active" db:"is_active,tinyint,1"`
+	DateJoined  time.Time `json:"date_joined" db:"date_joined,datetime,6"`
+}
+
+// AuthUserGroups
+type AuthUserGroups struct {
+	ID      int `json:"id" db:"id,int,11"`
+	UserId  int `json:"user_id" db:"user_id,int,11"`
+	GroupId int `json:"group_id" db:"group_id,int,11"`
+}
+
+// AuthUserUserPermissions
+type AuthUserUserPermissions struct {
+	ID           int `json:"id" db:"id,int,11"`
+	UserId       int `json:"user_id" db:"user_id,int,11"`
+	PermissionId int `json:"permission_id" db:"permission_id,int,11"`
 }
 ```
