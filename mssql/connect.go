@@ -37,6 +37,7 @@ func showTables(db *sql.DB) ([]*Table, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "db query")
 	}
+	defer rows.Close()
 	tables := []*Table{}
 	for rows.Next() {
 		var name string
