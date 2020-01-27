@@ -7,11 +7,13 @@ import (
 	"github.com/estenssoros/tabla/gopher"
 	"github.com/estenssoros/tabla/mysql"
 	"github.com/stretchr/testify/assert"
+	"github.com/xwb1989/sqlparser"
 )
 
-var testParseSrcTables = []struct {
+var testDropCreateTables = []struct {
 	in  string
 	out string
+	err bool
 }{
 	{
 		"type Charter struct {" +
@@ -114,15 +116,54 @@ var testParseSrcTables = []struct {
 			"    , `vessel_id` int(11)\n" +
 			"    , PRIMARY KEY(`id`)\n" +
 			");",
+		false,
 	},
+	{"asdf", "", true},
 }
 
 func TestDropCreate(t *testing.T) {
-	for i, tt := range testParseSrcTables {
+	for i, tt := range testDropCreateTables {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
 			dropCreate, err := gopher.DropCreate(tt.in, mysql.Dialect{})
-			assert.Nil(t, err)
-			assert.Equal(t, tt.out, dropCreate)
+			if tt.err {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.out, dropCreate)
+			}
+		})
+	}
+}
+
+type testConverter struct{}
+
+func (c testConverter) ColDefToGoField(colDef *sqlparser.ColumnDefinition, nulls bool) (*gopher.GoField, error) {
+	return &gopher.GoField{}, nil
+}
+
+func (c testConverter) PrepareStatment(sql string) string {
+	return sql
+}
+
+var testParseSrcTables = []struct {
+	in  string
+	err bool
+}{
+	{"CREATE TABLE `asdf` (id int);", false},
+	{"DROP TABLE `asdf`;", true},
+	{"INSERT INTO `asdf` (id) VALUES ('asdf');", true},
+	{"ASDF `asdf` (id) VALUES ('asdf');", true},
+}
+
+func TestParseSQLToGoStruct(t *testing.T) {
+	for i, tt := range testParseSrcTables {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			_, err := gopher.ParseSQLToGoStruct(tt.in, testConverter{}, false)
+			if tt.err {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
 		})
 	}
 }

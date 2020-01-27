@@ -13,7 +13,7 @@ func DropCreate(src string, d Dialect) (string, error) {
 	}
 	create, err := d.Create(goStruct)
 	if err != nil {
-		return "", errors.Wrap(err, "mysql create")
+		return "", errors.Wrap(err, "dialect create")
 	}
 	return d.DropIfExists(goStruct) + create, nil
 }
@@ -37,7 +37,7 @@ func ParseSQLToGoStruct(sql string, dialect Converter, nulls bool) (*GoStruct, e
 	for _, c := range ddl.TableSpec.Columns {
 		field, err := dialect.ColDefToGoField(c, nulls)
 		if err != nil {
-			return nil, errors.Wrap(err, "mysql type to go")
+			return nil, errors.Wrap(err, "dialect coldef to go field")
 		}
 		fields = append(fields, field)
 	}
