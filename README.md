@@ -13,7 +13,7 @@ convert a SQL create statement to a go struct and visa-versa
 type Test struct {
 	id               uuid.UUID
 	intField         int `db:"tag_name"`
-	stringField      string
+	stringField      string `db:"string_field,varchar,30"`
 	timeField        time.Time
 	boolField        bool
 	floatField       float64
@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS `test`;
 CREATE TABLE `test` (
     `id` VARCHAR(36)
     , `tag_name` INT
-    , `string_field` VARCHAR({update})
+    , `string_field` VARCHAR(30)
     , `time_field` DATETIME
     , `bool_field` TINYINT(1)
     , `float_field` FLOAT
@@ -79,13 +79,14 @@ tabla mysql statement
 output:
  
 ```go
+// Test
 type Test struct {
-	ID               uuid.UUID `json:"id" db:"id"`
-	IntField         int       `json:"int_field" db:"int_field"`
-	StringField      string    `json:"string_field" db:"string_field"`
-	TimeField        time.Time `json:"time_field" db:"time_field"`
-	BoolField        bool      `json:"bool_field" db:"bool_field"`
-	FloatField       float64   `json:"float_field" db:"float_field"`
+	ID          uuid.UUID `json:"id" db:"id,varchar,36"`
+	IntField    int       `json:"int_field" db:"int_field,int"`
+	StringField string    `json:"string_field" db:"string_field,varchar,23"`
+	TimeField   time.Time `json:"time_field" db:"time_field,datetime"`
+	BoolField   bool      `json:"bool_field" db:"bool_field,tinyint,1"`
+	FloatField  float64   `json:"float_field" db:"float_field,float"`
 }
 ```
 
