@@ -18,6 +18,7 @@ func DropCreate(src string, d Dialect) (string, error) {
 	return d.DropIfExists(goStruct) + create, nil
 }
 
+// ParseSQLToGoStruct parses raw sql into a go struct
 func ParseSQLToGoStruct(sql string, dialect Converter, nulls bool) (*GoStruct, error) {
 	sql = dialect.PrepareStatment(sql)
 	stmt, err := sqlparser.ParseStrictDDL(sql)

@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ConnectConfig config for database parameters
 type ConnectConfig struct {
 	Host     string
 	User     string
@@ -55,6 +56,7 @@ func showCreateTable(db *sql.DB, table string) (string, error) {
 	return create, nil
 }
 
+// ShowCreateTables returns the table definitions for a database
 func ShowCreateTables(config *ConnectConfig) ([]string, error) {
 	db, err := connect(config)
 	if err != nil {

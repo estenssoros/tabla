@@ -6,6 +6,7 @@ import (
 	"github.com/xwb1989/sqlparser"
 )
 
+// SQLType sql server data types
 type SQLType string
 
 var (
@@ -33,6 +34,7 @@ var (
 	varcharType        SQLType = "varchar"
 )
 
+// ToGoField converts a data type to a go field
 func (m SQLType) ToGoField(nulls bool, c *Column) (*gopher.GoField, error) {
 	field := &gopher.GoField{
 		Name:    c.Name,

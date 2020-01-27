@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ConnectConfig config for database parameters
 type ConnectConfig struct {
 	Host     string
 	User     string
@@ -48,12 +49,14 @@ func showTables(db *sql.DB) ([]*Table, error) {
 	return tables, nil
 }
 
+// Column sql server column information
 type Column struct {
 	Name   string
 	Type   SQLType
 	Length string
 }
 
+// Table sql server table information
 type Table struct {
 	Name     string
 	ObjectID string
@@ -65,6 +68,7 @@ func (t Table) String() string {
 	return string(ju)
 }
 
+// GetColumns select columns from sql server
 func (t *Table) GetColumns(db *sql.DB) error {
 	q := `
 	SELECT col.name
@@ -91,6 +95,7 @@ func (t *Table) GetColumns(db *sql.DB) error {
 	return nil
 }
 
+// ToGo converts a table definitions to go
 func (t *Table) ToGo(nulls bool) (string, error) {
 	fields := make([]*gopher.GoField, len(t.Columns))
 	for i, col := range t.Columns {
@@ -107,6 +112,7 @@ func (t *Table) ToGo(nulls bool) (string, error) {
 	return goStruct.ToGo()
 }
 
+// ShowTables wrapper for constructing tabel definitions
 func ShowTables(config *ConnectConfig) ([]*Table, error) {
 	db, err := connect(config)
 	if err != nil {

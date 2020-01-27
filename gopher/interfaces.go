@@ -8,6 +8,7 @@ type Dialect interface {
 	Create(*GoStruct) (string, error)
 }
 
+// Converter interface for converting from SQL to goField
 type Converter interface {
 	ColDefToGoField(*sqlparser.ColumnDefinition, bool) (*GoField, error)
 	PrepareStatment(string) string

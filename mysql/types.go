@@ -6,6 +6,7 @@ import (
 	"github.com/xwb1989/sqlparser"
 )
 
+// SQLType mysql data types
 type SQLType string
 
 var (
@@ -23,6 +24,7 @@ var (
 	decimalType  SQLType = "decimal"
 )
 
+// ToGoField conerts data type to a go field
 func (m SQLType) ToGoField(nulls bool, c *sqlparser.ColumnDefinition) (*gopher.GoField, error) {
 	field := &gopher.GoField{
 		Name:    c.Name.String(),

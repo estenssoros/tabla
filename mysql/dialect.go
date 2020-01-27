@@ -8,12 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Dialect mysql dialect
 type Dialect struct{}
 
+// DropIfExists drop if exists statement
 func (d Dialect) DropIfExists(s *gopher.GoStruct) string {
 	return fmt.Sprintf("DROP TABLE IF EXISTS `%s`;\n", s.SnakeName())
 }
 
+// Fields construct the column field definitions
 func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
 	var hasID bool
 	fields := []string{}
@@ -36,6 +39,7 @@ func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
 	return strings.Join(fields, "\n    , "), nil
 }
 
+// Field converts a go field to SQL syntax
 func (d Dialect) Field(goField *gopher.GoField) (string, error) {
 	if goField.SQLType == "" {
 		dataType, err := d.FieldToDataType(goField.Type)
@@ -63,6 +67,7 @@ func (d Dialect) Field(goField *gopher.GoField) (string, error) {
 	), nil
 }
 
+// Create for a create table statement
 func (d Dialect) Create(s *gopher.GoStruct) (string, error) {
 	fieldsFormatted, err := d.Fields(s.Fields)
 	if err != nil {
@@ -76,6 +81,7 @@ func (d Dialect) Create(s *gopher.GoStruct) (string, error) {
 	return stmt, nil
 }
 
+// FieldToDataType converts a field to a datatype
 func (d Dialect) FieldToDataType(goType gopher.GoType) (string, error) {
 	switch goType {
 	case gopher.IntType, gopher.NullsIntType:
