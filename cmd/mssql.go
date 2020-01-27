@@ -9,7 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var msSQLNulls bool
+
 func init() {
+	mssqlCmd.PersistentFlags().BoolVarP(&msSQLNulls, "nulls", "", false, "create go struct with nulls")
 	mssqlCmd.AddCommand(mssqlStatementCmd)
 	mssqlCmd.AddCommand(mssqlDatabaseCmd)
 }
@@ -27,7 +30,7 @@ var mssqlStatementCmd = &cobra.Command{
 		if err != nil {
 			return errors.Wrap(err, "read clipboard")
 		}
-		out, err := mssql.Go(stmt, nulls)
+		out, err := mssql.Go(stmt, msSQLNulls)
 		if err != nil {
 			return errors.Wrap(err, "mssql to go")
 		}
@@ -84,7 +87,7 @@ var mssqlDatabaseCmd = &cobra.Command{
 		var out = fmt.Sprintf("package %s\n", mssqlName)
 		fmt.Println(out)
 		for _, table := range tables {
-			goStructString, err := table.ToGo(nulls)
+			goStructString, err := table.ToGo(msSQLNulls)
 			if err != nil {
 				return errors.Wrap(err, "mysql go")
 			}

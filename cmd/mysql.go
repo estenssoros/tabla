@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var nulls bool
+var mySQLNulls bool
 
 func init() {
-	mysqlCmd.PersistentFlags().BoolVarP(&nulls, "nulls", "", false, "create go struct with nulls")
+	mysqlCmd.PersistentFlags().BoolVarP(&mySQLNulls, "nulls", "", false, "create go struct with nulls")
 	mysqlCmd.AddCommand(mysqlStatementCmd)
 	mysqlCmd.AddCommand(mysqlDatabaseCmd)
 }
@@ -41,7 +41,7 @@ var mysqlStatementCmd = &cobra.Command{
 		if err != nil {
 			return errors.Wrap(err, "read clipboard")
 		}
-		out, err := mysql.Go(stmt, nulls)
+		out, err := mysql.Go(stmt, mySQLNulls)
 		if err != nil {
 			return errors.Wrap(err, "mySQLToGo")
 		}
@@ -98,7 +98,7 @@ var mysqlDatabaseCmd = &cobra.Command{
 		var out = fmt.Sprintf("package %s\n", mysqlName)
 		fmt.Println(out)
 		for _, table := range tables {
-			goStructString, err := mysql.Go(table, nulls)
+			goStructString, err := mysql.Go(table, mySQLNulls)
 			if err != nil {
 				return errors.Wrap(err, "mysql go")
 			}
