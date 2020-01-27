@@ -54,7 +54,7 @@ CREATE TABLE `test` (
 note:  
 
 - table creates `{update}` areas where the user is supposed to input the length of a datatype
-- struct tags with the key `db` replace field names in the generated SQL
+- struct tags with the key `db` replace field names in the generated SQL and can be used to specify datatype and length
 
 ## SQL to Go
 
