@@ -95,11 +95,11 @@ type Test struct {
 ### Entire database
 
 ```bash
-tabla mysql database --host 127.0.0.1 -u root -p my_password -n my_datatbase
+tabla mysql database --host 127.0.0.1 -u root -p my_password -n my_database
 ```
 
 ```go
-package dev
+package my_database
 
 // AuthGroup
 type AuthGroup struct {
