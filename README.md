@@ -72,6 +72,8 @@ CREATE TABLE `test` (
 
 copy the create statement to you clipboard
 
+### Statement
+
 ```bash
 tabla mysql statement
 ```
@@ -89,6 +91,8 @@ type Test struct {
 	FloatField  float64   `json:"float_field" db:"float_field,float"`
 }
 ```
+
+### Entire database
 
 ```bash
 tabla mysql database --host 127.0.0.1 -u root -p my_password -n my_datatbase
