@@ -37,34 +37,34 @@ func (f *GoField) CamelName() string {
 
 // ToGo converts to go fmt field
 func (f *GoField) ToGo() string {
-	if f.SQLType == "" {
-		return fmt.Sprintf(
-			"    %s %s `json:\"%s\" db:\"%s\"`",
-			f.CamelName(),
-			f.Type,
-			f.SnakeName(),
-			f.SnakeName(),
-		)
-	}
-	if f.SQLExtra == "" {
-		return fmt.Sprintf(
-			"    %s %s `json:\"%s\" db:\"%s,%s\"`",
-			f.CamelName(),
-			f.Type,
-			f.SnakeName(),
-			f.SnakeName(),
-			f.SQLType,
-		)
-	}
+	// if f.SQLType == "" {
 	return fmt.Sprintf(
-		"    %s %s `json:\"%s\" db:\"%s,%s,%s\"`",
+		"    %s %s `json:\"%s\" db:\"%s\"`",
 		f.CamelName(),
 		f.Type,
 		f.SnakeName(),
 		f.SnakeName(),
-		f.SQLType,
-		f.SQLExtra,
 	)
+	// }
+	// if f.SQLExtra == "" {
+	// 	return fmt.Sprintf(
+	// 		"    %s %s `json:\"%s\" db:\"%s,%s\"`",
+	// 		f.CamelName(),
+	// 		f.Type,
+	// 		f.SnakeName(),
+	// 		f.SnakeName(),
+	// 		f.SQLType,
+	// 	)
+	// }
+	// return fmt.Sprintf(
+	// 	"    %s %s `json:\"%s\" db:\"%s,%s,%s\"`",
+	// 	f.CamelName(),
+	// 	f.Type,
+	// 	f.SnakeName(),
+	// 	f.SnakeName(),
+	// 	f.SQLType,
+	// 	f.SQLExtra,
+	// )
 }
 
 // GoStruct a go struct
@@ -97,9 +97,28 @@ func (s *GoStruct) ToGoFields() string {
 	return strings.Join(fields, "\n")
 }
 
+func (s *GoStruct) Stringer() string {
+	expr := `func(%s %s) String() string {
+		ju,_:=json.Marshal(%s)
+		return string(ju)
+	}
+	`
+	return fmt.Sprintf(expr, s.SnakeName()[:1], s.CamelName(), s.SnakeName()[:1])
+}
+func (s *GoStruct) TableName() string {
+	expr := `
+	func (%s %s) TableName() string{
+		return "%s"
+	}
+	`
+	return fmt.Sprintf(expr, s.SnakeName()[:1], s.CamelName(), s.SnakeName())
+}
+
 // ToGo converts go struct to text definition
 func (s *GoStruct) ToGo() (string, error) {
 	expr := fmt.Sprintf("// %s\ntype %s struct {\n%s\n}\n", s.CamelName(), s.CamelName(), s.ToGoFields())
+	expr += s.Stringer()
+	expr += s.TableName()
 	b, err := format.Source([]byte(expr))
 	if err != nil {
 		return "", errors.Wrap(err, "format node")
