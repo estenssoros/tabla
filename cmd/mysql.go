@@ -107,7 +107,7 @@ var mysqlDatabaseCmd = &cobra.Command{
 
 var mysqlStructCmd = &cobra.Command{
 	Use:     "struct",
-	Short:   "converts a mysql statement to a go struct",
+	Short:   "converts a go struct to a mysql create statement",
 	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
 	RunE: func(cmd *cobra.Command, args []string) error {
 		stmt, err := clipboard.ReadAll()
