@@ -6,7 +6,7 @@ import (
 	"go/format"
 	"strings"
 
-	"github.com/estenssoros/tabla/helpers"
+	"github.com/estenssoros/tabla/internal/helpers"
 	"github.com/pkg/errors"
 )
 

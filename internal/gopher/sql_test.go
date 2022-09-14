@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/estenssoros/tabla/gopher"
-	"github.com/estenssoros/tabla/mysql"
+	"github.com/estenssoros/tabla/internal/gopher"
+	"github.com/estenssoros/tabla/internal/mysql"
 	"github.com/stretchr/testify/assert"
 	"github.com/xwb1989/sqlparser"
 )
