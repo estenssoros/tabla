@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/atotto/clipboard"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/estenssoros/tabla/internal/mysql"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -13,8 +14,11 @@ var mySQLNulls bool
 
 func init() {
 	mysqlCmd.PersistentFlags().BoolVarP(&mySQLNulls, "nulls", "", false, "create go struct with nulls")
-	mysqlCmd.AddCommand(mysqlStatementCmd)
-	mysqlCmd.AddCommand(mysqlDatabaseCmd)
+	mysqlCmd.AddCommand(
+		mysqlStatementCmd,
+		mysqlDatabaseCmd,
+		mysqlStructCmd,
+	)
 }
 
 var mysqlCmd = &cobra.Command{
@@ -97,6 +101,30 @@ var mysqlDatabaseCmd = &cobra.Command{
 		if copy {
 			clipboard.WriteAll(out)
 		}
+		return nil
+	},
+}
+
+var mysqlStructCmd = &cobra.Command{
+	Use:     "struct",
+	Short:   "converts a mysql statement to a go struct",
+	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
+	RunE: func(cmd *cobra.Command, args []string) error {
+		stmt, err := clipboard.ReadAll()
+		if err != nil {
+			return errors.Wrap(err, "clipboard readall")
+		}
+		if stmt == "" {
+			return errors.New("no stmt in clipboard")
+		}
+		out, err := gopher.DropCreate(stmt, mysql.Dialect{})
+		if err != nil {
+			return errors.Wrap(err, "gopher mysql")
+		}
+		if copy {
+			return errors.Wrap(clipboard.WriteAll(out), "clipboard write")
+		}
+		fmt.Println(out)
 		return nil
 	},
 }

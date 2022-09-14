@@ -10,7 +10,6 @@ var copy bool
 
 func init() {
 	rootCmd.AddCommand(
-		goCmd,
 		mysqlCmd,
 		mssqlCmd,
 		bigqueryCmd,
