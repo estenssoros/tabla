@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/atotto/clipboard"
-	"github.com/estenssoros/tabla/mysql"
+	"github.com/estenssoros/tabla/internal/mysql"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -22,22 +22,11 @@ var mysqlCmd = &cobra.Command{
 	Short: "converts a mysql create statement to a go struct",
 }
 
-func readClipboad() (string, error) {
-	stmt, err := clipboard.ReadAll()
-	if err != nil {
-		return "", errors.Wrap(err, "clipboard readall")
-	}
-	if stmt == "" {
-		return "", errors.New("no stmt in clipboard")
-	}
-	return stmt, nil
-}
-
 var mysqlStatementCmd = &cobra.Command{
 	Use:   "statement",
-	Short: "reads a statement from the clipboard and returns a go stuct",
+	Short: "reads a statement from the clipboard and returns a go struct",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		stmt, err := readClipboad()
+		stmt, err := readClipboard()
 		if err != nil {
 			return errors.Wrap(err, "read clipboard")
 		}

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/atotto/clipboard"
-	"github.com/estenssoros/tabla/gopher"
-	"github.com/estenssoros/tabla/mysql"
+	"github.com/estenssoros/tabla/internal/gopher"
+	"github.com/estenssoros/tabla/internal/mysql"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,7 @@ func init() {
 
 var goCmd = &cobra.Command{
 	Use:   "go",
-	Short: "converts a go stuct to a create table statement",
+	Short: "converts a go struct to a create table statement",
 }
 
 var goMySQLCmd = &cobra.Command{

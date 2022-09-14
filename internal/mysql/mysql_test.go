@@ -1,10 +1,9 @@
-package main
+package mysql
 
 import (
 	"testing"
 
-	"github.com/estenssoros/tabla/gopher"
-	"github.com/estenssoros/tabla/mysql"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -63,7 +62,7 @@ var testMySQLTables = []struct {
 
 func TestMySQL(t *testing.T) {
 	for _, tt := range testMySQLTables {
-		out, err := gopher.DropCreate(tt.in, mysql.Dialect{})
+		out, err := gopher.DropCreate(tt.in, Dialect{})
 		if tt.err {
 			assert.NotNil(t, err)
 			assert.Empty(t, out)

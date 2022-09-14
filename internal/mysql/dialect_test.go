@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/estenssoros/tabla/gopher"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/stretchr/testify/assert"
 )
 

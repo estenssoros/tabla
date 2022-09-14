@@ -1,7 +1,7 @@
 package mssql
 
 import (
-	"github.com/estenssoros/tabla/gopher"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/pkg/errors"
 	"github.com/xwb1989/sqlparser"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/atotto/clipboard"
-	"github.com/estenssoros/tabla/mssql"
+	"github.com/estenssoros/tabla/internal/mssql"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -24,9 +24,9 @@ var mssqlCmd = &cobra.Command{
 
 var mssqlStatementCmd = &cobra.Command{
 	Use:   "statement",
-	Short: "reads a statement from the clipboard and returns a go stuct",
+	Short: "reads a statement from the clipboard and returns a go struct",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		stmt, err := readClipboad()
+		stmt, err := readClipboard()
 		if err != nil {
 			return errors.Wrap(err, "read clipboard")
 		}

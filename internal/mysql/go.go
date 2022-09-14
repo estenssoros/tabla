@@ -1,11 +1,11 @@
-package mssql
+package mysql
 
 import (
-	"github.com/estenssoros/tabla/gopher"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/pkg/errors"
 )
 
-// Go parses sql into go struct
+// Go parses mysql to go struct text
 func Go(sql string, nulls bool) (string, error) {
 	goStruct, err := gopher.ParseSQLToGoStruct(sql, &converter{}, nulls)
 	if err != nil {

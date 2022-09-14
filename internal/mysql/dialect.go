@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/estenssoros/tabla/gopher"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/pkg/errors"
 )
 

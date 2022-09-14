@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	_ "github.com/denisenkom/go-mssqldb" //mssql
-	"github.com/estenssoros/tabla/gopher"
+	"github.com/estenssoros/tabla/internal/gopher"
 	"github.com/pkg/errors"
 )
 
