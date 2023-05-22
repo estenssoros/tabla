@@ -9,22 +9,21 @@ import (
 var copy bool
 
 func init() {
-	rootCmd.AddCommand(
-		mysqlCmd,
-		mssqlCmd,
-		bigqueryCmd,
+	Cmd.AddCommand(
+		goCmd,
+		sqlCmd,
 	)
-	rootCmd.PersistentFlags().BoolVarP(&copy, "copy", "c", false, "send output to clipboard")
+	Cmd.PersistentFlags().BoolVarP(&copy, "copy", "c", false, "send output to clipboard")
 }
 
-var rootCmd = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:   "tabla",
-	Short: "parses SQL and Go to bridge the languages",
+	Short: "pbridge SQL and go",
 }
 
 // Execute main entry point for command
 func Execute() error {
-	return rootCmd.Execute()
+	return Cmd.Execute()
 }
 
 func readClipboard() (string, error) {
