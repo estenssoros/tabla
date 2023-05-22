@@ -35,8 +35,8 @@ var (
 )
 
 // ToGoField converts a data type to a go field
-func (m SQLType) ToGoField(nulls bool, c *Column) (*gopher.GoField, error) {
-	field := &gopher.GoField{
+func (m SQLType) ToGoField(nulls bool, c *Column) (*gopher.Field, error) {
+	field := &gopher.Field{
 		Name:    c.Name,
 		SQLType: string(m),
 	}
@@ -106,7 +106,7 @@ func (m SQLType) toGoNulls(s string) (gopher.GoType, error) {
 
 type converter struct{}
 
-func (c converter) ColDefToGoField(colDef *sqlparser.ColumnDefinition, nulls bool) (*gopher.GoField, error) {
+func (c converter) ColDefToGoField(colDef *sqlparser.ColumnDefinition, nulls bool) (*gopher.Field, error) {
 	col := &Column{
 		Name: colDef.Name.String(),
 		Type: SQLType(colDef.Type.Type),

@@ -19,7 +19,7 @@ func DropCreate(src string, d Dialect) (string, error) {
 }
 
 // ParseSQLToGoStruct parses raw sql into a go struct
-func ParseSQLToGoStruct(sql string, dialect Converter, nulls bool) (*GoStruct, error) {
+func ParseSQLToGoStruct(sql string, dialect Converter, nulls bool) (*Struct, error) {
 	sql = dialect.PrepareStatment(sql)
 	stmt, err := sqlparser.ParseStrictDDL(sql)
 	if err != nil {
@@ -33,7 +33,7 @@ func ParseSQLToGoStruct(sql string, dialect Converter, nulls bool) (*GoStruct, e
 	if ddl.Action != "create" {
 		return nil, errors.New("only create statements supported")
 	}
-	fields := []*GoField{}
+	fields := []*Field{}
 	for _, c := range ddl.TableSpec.Columns {
 		field, err := dialect.ColDefToGoField(c, nulls)
 		if err != nil {
@@ -41,7 +41,7 @@ func ParseSQLToGoStruct(sql string, dialect Converter, nulls bool) (*GoStruct, e
 		}
 		fields = append(fields, field)
 	}
-	return &GoStruct{
+	return &Struct{
 		Name:   ddl.NewName.Name.String(),
 		Fields: fields,
 	}, nil

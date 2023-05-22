@@ -137,8 +137,8 @@ func TestDropCreate(t *testing.T) {
 
 type testConverter struct{}
 
-func (c testConverter) ColDefToGoField(colDef *sqlparser.ColumnDefinition, nulls bool) (*gopher.GoField, error) {
-	return &gopher.GoField{}, nil
+func (c testConverter) ColDefToGoField(colDef *sqlparser.ColumnDefinition, nulls bool) (*gopher.Field, error) {
+	return &gopher.Field{}, nil
 }
 
 func (c testConverter) PrepareStatment(sql string) string {

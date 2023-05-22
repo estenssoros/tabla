@@ -98,7 +98,7 @@ func (t *Table) GetColumns(db *sql.DB) error {
 
 // ToGo converts a table definitions to go
 func (t *Table) ToGo(nulls bool) (string, error) {
-	fields := make([]*gopher.GoField, len(t.Columns))
+	fields := make([]*gopher.Field, len(t.Columns))
 	for i, col := range t.Columns {
 		field, err := col.Type.ToGoField(nulls, col)
 		if err != nil {
@@ -106,7 +106,7 @@ func (t *Table) ToGo(nulls bool) (string, error) {
 		}
 		fields[i] = field
 	}
-	goStruct := &gopher.GoStruct{
+	goStruct := &gopher.Struct{
 		Name:   t.Name,
 		Fields: fields,
 	}

@@ -10,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// GoField field on a go struct
-type GoField struct {
+// Field field on a go struct
+type Field struct {
 	Name     string `json:"name"`
 	Type     GoType `json:"type"`
 	Tag      string `json:"tag"`
@@ -20,7 +20,7 @@ type GoField struct {
 }
 
 // SnakeName converts a field name to snake
-func (f *GoField) SnakeName() string {
+func (f *Field) SnakeName() string {
 	if f.Tag != "" {
 		return f.Tag
 	}
@@ -28,7 +28,7 @@ func (f *GoField) SnakeName() string {
 }
 
 // CamelName convert a field name to camel
-func (f *GoField) CamelName() string {
+func (f *Field) CamelName() string {
 	if f.Name == "id" {
 		return "ID"
 	}
@@ -36,7 +36,7 @@ func (f *GoField) CamelName() string {
 }
 
 // ToGo converts to go fmt field
-func (f *GoField) ToGo() string {
+func (f *Field) ToGo() string {
 	// if f.SQLType == "" {
 	return fmt.Sprintf(
 		"    %s %s `json:\"%s\" db:\"%s\"`",
@@ -67,29 +67,29 @@ func (f *GoField) ToGo() string {
 	// )
 }
 
-// GoStruct a go struct
-type GoStruct struct {
-	Name   string     `json:"name"`
-	Fields []*GoField `json:"fields"`
+// Struct a go struct
+type Struct struct {
+	Name   string   `json:"name"`
+	Fields []*Field `json:"fields"`
 }
 
 // SnakeName converts a go struct name to snake
-func (s *GoStruct) SnakeName() string {
+func (s *Struct) SnakeName() string {
 	return helpers.ToSnake(s.Name)
 }
 
 // CamelName converts a go struct name to camel
-func (s *GoStruct) CamelName() string {
+func (s *Struct) CamelName() string {
 	return helpers.ToCamel(s.Name)
 }
 
-func (s GoStruct) String() string {
+func (s Struct) String() string {
 	ju, _ := json.MarshalIndent(s, "", " ")
 	return string(ju)
 }
 
 // ToGoFields creates the text for a go struct
-func (s *GoStruct) ToGoFields() string {
+func (s *Struct) ToGoFields() string {
 	fields := []string{}
 	for _, f := range s.Fields {
 		fields = append(fields, f.ToGo())
@@ -97,7 +97,7 @@ func (s *GoStruct) ToGoFields() string {
 	return strings.Join(fields, "\n")
 }
 
-func (s *GoStruct) Stringer() string {
+func (s *Struct) Stringer() string {
 	expr := `func(%s %s) String() string {
 		ju,_:=json.Marshal(%s)
 		return string(ju)
@@ -105,7 +105,7 @@ func (s *GoStruct) Stringer() string {
 	`
 	return fmt.Sprintf(expr, s.SnakeName()[:1], s.CamelName(), s.SnakeName()[:1])
 }
-func (s *GoStruct) TableName() string {
+func (s *Struct) TableName() string {
 	expr := `
 	func (%s %s) TableName() string{
 		return "%s"
@@ -115,7 +115,7 @@ func (s *GoStruct) TableName() string {
 }
 
 // ToGo converts go struct to text definition
-func (s *GoStruct) ToGo() (string, error) {
+func (s *Struct) ToGo() (string, error) {
 	expr := fmt.Sprintf("// %s\ntype %s struct {\n%s\n}\n", s.CamelName(), s.CamelName(), s.ToGoFields())
 	expr += s.Stringer()
 	expr += s.TableName()

@@ -12,12 +12,12 @@ import (
 type Dialect struct{}
 
 // DropIfExists drop if exists statement
-func (d Dialect) DropIfExists(s *gopher.GoStruct) string {
+func (d Dialect) DropIfExists(s *gopher.Struct) string {
 	return fmt.Sprintf("DROP TABLE IF EXISTS `%s`;\n", s.SnakeName())
 }
 
 // Fields construct the column field definitions
-func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
+func (d Dialect) Fields(goFields []*gopher.Field) (string, error) {
 	var hasID bool
 	fields := []string{}
 	for _, goField := range goFields {
@@ -40,7 +40,7 @@ func (d Dialect) Fields(goFields []*gopher.GoField) (string, error) {
 }
 
 // Field converts a go field to SQL syntax
-func (d Dialect) Field(goField *gopher.GoField) (string, error) {
+func (d Dialect) Field(goField *gopher.Field) (string, error) {
 	if goField.SQLType == "" {
 		dataType, err := d.FieldToDataType(goField.Type)
 		if err != nil {
@@ -68,7 +68,7 @@ func (d Dialect) Field(goField *gopher.GoField) (string, error) {
 }
 
 // Create for a create table statement
-func (d Dialect) Create(s *gopher.GoStruct) (string, error) {
+func (d Dialect) Create(s *gopher.Struct) (string, error) {
 	fieldsFormatted, err := d.Fields(s.Fields)
 	if err != nil {
 		return "", errors.Wrap(err, "mysql fields")

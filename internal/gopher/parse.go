@@ -54,7 +54,7 @@ func parseTag(s string) *tags {
 	return &tags{reflect.StructTag(s)}
 }
 
-func parseGoSrc(src string) (*GoStruct, error) {
+func parseGoSrc(src string) (*Struct, error) {
 	src = checksrc(src)
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, "", src, parser.AllErrors)
@@ -73,12 +73,12 @@ func parseGoSrc(src string) (*GoStruct, error) {
 	if !ok {
 		return nil, errors.New("could not find struct type")
 	}
-	goFields := []*GoField{}
+	goFields := []*Field{}
 	fields := structDecl.Fields.List
 	for _, field := range fields {
 
 		typeExpr := field.Type
-		goField := &GoField{
+		goField := &Field{
 			Name: field.Names[0].Name,
 			Type: GoType(src[typeExpr.Pos()-1 : typeExpr.End()-1]),
 		}
@@ -97,7 +97,7 @@ func parseGoSrc(src string) (*GoStruct, error) {
 		}
 		goFields = append(goFields, goField)
 	}
-	return &GoStruct{
+	return &Struct{
 		Name:   structType.Name.Name,
 		Fields: goFields,
 	}, nil

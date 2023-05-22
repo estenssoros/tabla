@@ -9,19 +9,19 @@ import (
 )
 
 func TestDielectDropIfExists(t *testing.T) {
-	s := &gopher.GoStruct{
+	s := &gopher.Struct{
 		Name: "asdf",
 	}
 	assert.Equal(t, "DROP TABLE IF EXISTS `asdf`;\n", Dialect{}.DropIfExists(s))
 }
 
 var testDialectFieldsTables = []struct {
-	fields []*gopher.GoField
+	fields []*gopher.Field
 	err    bool
 }{
 	{
-		[]*gopher.GoField{
-			&gopher.GoField{
+		[]*gopher.Field{
+			&gopher.Field{
 				Name: "id",
 				Type: "int",
 			},
@@ -29,29 +29,29 @@ var testDialectFieldsTables = []struct {
 		false,
 	},
 	{
-		[]*gopher.GoField{
-			&gopher.GoField{
+		[]*gopher.Field{
+			&gopher.Field{
 				Name:    "id",
 				Type:    "int",
 				SQLType: "datetime",
 			},
-			&gopher.GoField{
+			&gopher.Field{
 				Name: "id",
 				Type: "string",
 			},
-			&gopher.GoField{
+			&gopher.Field{
 				Name: "id",
 				Type: "time.Time",
 			},
-			&gopher.GoField{
+			&gopher.Field{
 				Name: "id",
 				Type: "bool",
 			},
-			&gopher.GoField{
+			&gopher.Field{
 				Name: "id",
 				Type: "float64",
 			},
-			&gopher.GoField{
+			&gopher.Field{
 				Name: "id",
 				Type: "uuid.UUID",
 			},
@@ -59,8 +59,8 @@ var testDialectFieldsTables = []struct {
 		false,
 	},
 	{
-		[]*gopher.GoField{
-			&gopher.GoField{
+		[]*gopher.Field{
+			&gopher.Field{
 				Name:     "id",
 				Type:     "int",
 				SQLType:  "varchar",
@@ -70,8 +70,8 @@ var testDialectFieldsTables = []struct {
 		false,
 	},
 	{
-		[]*gopher.GoField{
-			&gopher.GoField{
+		[]*gopher.Field{
+			&gopher.Field{
 				Name: "id",
 			},
 		},
@@ -94,17 +94,17 @@ func TestDialectFields(t *testing.T) {
 }
 
 var testDialectCreateTables = []struct {
-	in  *gopher.GoStruct
+	in  *gopher.Struct
 	err bool
 }{
 	{
-		&gopher.GoStruct{},
+		&gopher.Struct{},
 		false,
 	},
 	{
-		&gopher.GoStruct{
-			Fields: []*gopher.GoField{
-				&gopher.GoField{},
+		&gopher.Struct{
+			Fields: []*gopher.Field{
+				&gopher.Field{},
 			},
 		},
 		true,
